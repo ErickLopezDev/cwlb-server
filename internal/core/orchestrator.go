@@ -9,6 +9,12 @@ import (
 	"github.com/ErickLopezDev/cwlb-server/internal/services"
 )
 
+type OrchestratorInterface interface {
+	HandleAudio(audioData []byte) ([]byte, error)
+	ProcessAudio(inputText string) ([]byte, error)
+	PlayAudio(audio []byte) error
+}
+
 type Orchestrator struct {
 	STT services.STTService
 	LLM services.LLMService
@@ -72,4 +78,8 @@ func (o *Orchestrator) HandleAudio(audioData []byte) ([]byte, error) {
 
 	log.Println("[Orchestrator] Complete pipeline OK")
 	return outputAudio, nil
+}
+
+func (o *Orchestrator) PlayAudio(audio []byte) error {
+	return o.TTS.PlayAudio(audio)
 }

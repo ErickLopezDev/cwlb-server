@@ -16,9 +16,8 @@ type GeminiLLM struct {
 func NewGeminiLLM(apiKey string) (*GeminiLLM, error) {
 	ctx := context.Background()
 
-	client, err := genai.NewClient(ctx, nil)
+	client, err := genai.NewClient(ctx, &genai.ClientConfig{APIKey: apiKey})
 	if err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
 
@@ -39,7 +38,6 @@ func (g *GeminiLLM) Ask(prompt string) (string, error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
 		return "", fmt.Errorf("gemini request failed: %w", err)
 	}
 
