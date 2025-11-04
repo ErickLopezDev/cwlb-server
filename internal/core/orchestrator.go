@@ -51,9 +51,7 @@ func (o *Orchestrator) HandleAudio(audioData []byte) ([]byte, error) {
 	tmpDir := os.TempDir()
 	filePath := filepath.Join(tmpDir, "input_audio_"+time.Now().Format("150405")+".wav")
 
-	if err := os.WriteFile(filePath, audioData, 0644); err != nil {
-		return nil, err
-	}
+	saveWAV(audioData, filePath)
 	log.Println("[Orchestrator] Temporary audio saved at:", filePath)
 
 	// Convert audio to text
