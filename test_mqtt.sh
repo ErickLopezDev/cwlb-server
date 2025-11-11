@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Test script for MQTT audio processing
-# Usage: ./test_mqtt.sh test.wav [broker] [port]
+# ./test_mqtt.sh test.wav [broker] [port]
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 <test.wav> [broker] [port]"
@@ -35,6 +34,7 @@ if [ ! -f "$RAW_FILE" ]; then
   echo "Failed to create raw file"
   exit 1
 fi
+
 RAW_SIZE=$(stat -c%s "$RAW_FILE")
 echo "RAW_FILE size: $RAW_SIZE bytes"
 
@@ -85,9 +85,9 @@ mkdir -p "$OUTPUT_DIR"
 # Subscribe to response chunks
 TEMP_SUB="temp_sub.txt"
 rm -f "$TEMP_SUB"
-mosquitto_sub -h $BROKER -p $PORT -t "/device/$DEVICE_ID/audio/response_chunk" -t "/device/$DEVICE_ID/audio/response_end" > "$TEMP_SUB" &
+mosquitto_sub -h $BROKER -p $PORT -t "/device/$DEVICE_ID/audio/response_chunk" -t "/device/$DEVICE_ID/audio/response_end" >"$TEMP_SUB" &
 SUB_PID=$!
-sleep 1  # Wait for sub to start
+sleep 1 # Wait for sub to start
 
 # Wait a bit for messages
 sleep 15
@@ -114,12 +114,12 @@ while read -r line; do
   if [ -z "$DATA" ] && [[ "$line" != *"response_end"* ]]; then
     DATA="$line"
     INDEX="$CHUNK_COUNT"
-    TOTAL=1  # Assume single chunk if not JSON
+    TOTAL=1 # Assume single chunk if not JSON
   fi
   if [ -n "$DATA" ]; then
     printf "DATA preview: %.50s...\n" "$DATA"
     CHUNK_FILE="$OUTPUT_DIR/chunk_$(printf "%04d" $INDEX).pcm"
-    if echo "$DATA" | base64 -d > "$CHUNK_FILE" 2>/dev/null; then
+    if echo "$DATA" | base64 -d >"$CHUNK_FILE" 2>/dev/null; then
       SIZE=$(stat -c%s "$CHUNK_FILE" 2>/dev/null || echo 0)
       echo "Decoded and saved chunk $INDEX to $CHUNK_FILE (size: $SIZE bytes), total collected: $((CHUNK_COUNT + 1))"
       CHUNK_COUNT=$((CHUNK_COUNT + 1))
@@ -128,7 +128,7 @@ while read -r line; do
       echo "Failed to decode DATA: '$DATA'"
     fi
   fi
-done < "$TEMP_SUB"
+done <"$TEMP_SUB"
 
 rm -f "$TEMP_SUB"
 

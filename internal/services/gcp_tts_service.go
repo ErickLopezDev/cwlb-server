@@ -47,14 +47,13 @@ func (t *GCPTTS) Synthesize(text string) ([]byte, error) {
 	return resp.AudioContent, nil
 }
 
-// Reproducción en parlante
 func (t *GCPTTS) PlayAudio(pcmBytes []byte) error {
 	portaudio.Initialize()
 	defer portaudio.Terminate()
 
 	// Convert raw PCM bytes to int16 samples
 	samples := make([]int16, len(pcmBytes)/2)
-	for i := 0; i < len(samples); i++ {
+	for i := range samples {
 		samples[i] = int16(pcmBytes[i*2]) | int16(pcmBytes[i*2+1])<<8
 	}
 

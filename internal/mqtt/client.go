@@ -145,7 +145,7 @@ func handleEnd(mu *sync.Mutex, sessions map[string]*AudioSession, currentDevice 
 	// Send response in chunks
 	chunkSize := 32000 // ~1 second at 16000 Hz, 16-bit
 	totalChunks := (len(audioResponse) + chunkSize - 1) / chunkSize
-	for i := 0; i < totalChunks; i++ {
+	for i := range totalChunks {
 		start := i * chunkSize
 		end := start + chunkSize
 		if end > len(audioResponse) {
