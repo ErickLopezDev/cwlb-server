@@ -139,6 +139,8 @@ if [ -d "$OUTPUT_DIR" ] && [ "$CHUNK_COUNT" -eq "$TOTAL_CHUNKS" ]; then
   echo "To convert to WAV: sox -r 16000 -b 16 -c 1 -e signed-integer combined.pcm esp32Output.wav"
   echo "Or play: aplay -r 16000 -f S16_LE combined.pcm"
   echo "ESP32 would now play this audio."
+  cat ./tmp-esp32-output/chunk_*.pcm >combined.pcm
+  aplay -r 16000 -f S16_LE combined.pcm
 else
   echo "Incomplete response: received $CHUNK_COUNT of $TOTAL_CHUNKS chunks"
 fi

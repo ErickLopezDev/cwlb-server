@@ -64,7 +64,7 @@ func (r *LocalRecorder) recordLoop() {
 			log.Println("Error reading from mic:", err)
 			continue
 		}
-		// Guardar chunk
+		// Save chunk
 		chunkCopy := make([]byte, len(input)*2)
 		for i, v := range input {
 			chunkCopy[i*2] = byte(v)
@@ -76,25 +76,25 @@ func (r *LocalRecorder) recordLoop() {
 	}
 }
 
-// Concatenar chunks y enviar a orchestrator
+// Concat chunks & send to orchestrator
 func (r *LocalRecorder) processAudio() {
 	r.mu.Lock()
 	fullAudio := bytes.Join(r.Chunks, []byte{})
 	r.Chunks = [][]byte{} // limpiar
 	r.mu.Unlock()
 
-	// Guardar temporal WAV
+	// Save temporal WAV
 	tmpFile := "local_record.wav"
 	saveWAV(fullAudio, tmpFile)
 
-	// Procesar audio completo
+	// Process complete audio
 	respAudio, err := r.Orchestrator.HandleAudio(fullAudio)
 	if err != nil {
 		log.Println("Error processing audio:", err)
 		return
 	}
 
-	// Reproducir respuesta
+	// Reproduce answer
 	r.Orchestrator.PlayAudio(respAudio)
 }
 
@@ -114,7 +114,7 @@ func saveWAV(data []byte, fileName string) {
 
 func bytesToInt16(b []byte) []int {
 	out := make([]int, len(b)/2)
-	for i := 0; i < len(out); i++ {
+	for i := range out {
 		out[i] = int(int16(b[i*2]) | int16(b[i*2+1])<<8)
 	}
 	return out

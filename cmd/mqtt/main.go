@@ -44,7 +44,7 @@ func main() {
 		TTS: tts,
 	}
 
-	broker := "tcp://localhost:1883" // Adjust as needed
+	broker := "tcp://localhost:1883" 
 	_ = mqtt.NewClient(broker, orchestrator)
 
 	log.Println("MQTT server running...")

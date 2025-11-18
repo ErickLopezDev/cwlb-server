@@ -2,7 +2,6 @@ package core
 
 import (
 	"log"
-	"os"
 	"path/filepath"
 	"time"
 
@@ -48,7 +47,7 @@ func (o *Orchestrator) HandleAudio(audioData []byte) ([]byte, error) {
 	log.Println("[Orchestrator] Starting complete audio pipeline...")
 
 	// Create temporary file for STT
-	tmpDir := os.TempDir()
+	tmpDir := "."
 	filePath := filepath.Join(tmpDir, "input_audio_"+time.Now().Format("150405")+".wav")
 
 	saveWAV(audioData, filePath)
